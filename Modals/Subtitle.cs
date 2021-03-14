@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Encoder.Modal
+namespace Modals
 {
     public class Subtitle
     {

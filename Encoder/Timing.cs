@@ -14,7 +14,7 @@ namespace Encoder
         /// </summary>
         /// <param name="value"></param>
         /// <exception cref="">FormatException</exception>
-        public Timing(string value) 
+        public Timing(string value)
         {
             time = TimeSpan.Parse(value);
         }
@@ -41,7 +41,7 @@ namespace Encoder
 
         public long getMilliseconds()
         {
-            return time.Milliseconds;
+            return (long)time.TotalMilliseconds;
         }
 
         public string getTimeAsString()

@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Encoder.Interfaces
 {
-    interface IEncode
+    interface IBaseEncoder
     {
         void Load(List<Dialog> dialogs);
-
+        string[] GetSubtitle();
     }
 }

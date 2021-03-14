@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Encoder
+namespace Subby.Display
 {
-    public class SubtitleModal
+    public class Welcome
     {
+
+
 
     }
 }
