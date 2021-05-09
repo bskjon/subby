@@ -7,6 +7,9 @@ namespace Cleaner
 {
     public class Sanitize
     {
+        public static Regex onlyNumber = new Regex("^[0-9]+$");
+        public static Regex timeArrow = new Regex("-->");
+
         readonly Regex curlyBraces = new Regex(@"[{](?<={).*?(?=})[}]");
         readonly Regex tags = new Regex(@"[<](?<=<).*?(?=>)[>]");
         readonly Regex regexIllegalChars = new Regex(@"[^\x09\x0A\x0D\x20-\xD7FF\xE000-\xFFFD\x10000\x10FFFF]");

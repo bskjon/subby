@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Cleaner\Cleaner.csproj" />
+    <ProjectReference Include="..\Encoder\Encoder.csproj" />
     <ProjectReference Include="..\Modals\Modals.csproj" />
   </ItemGroup>
 

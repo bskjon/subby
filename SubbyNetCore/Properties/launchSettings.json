@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SubbyNetCore": {
+      "commandName": "Project",
+      "commandLineArgs": "-input \"F:\\stream\\test_in\\Psycho-Pass S01E01.ass\" -output F:\\stream\\test_out -enc_sas no"
+    }
+  }
+}

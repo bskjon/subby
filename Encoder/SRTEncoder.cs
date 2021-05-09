@@ -21,7 +21,7 @@ namespace Encoder
 
                 StringBuilder str = new StringBuilder();
 
-                str.AppendLine((dialogs.IndexOf(dialog) + 1).ToString());
+                str.AppendLine((dialogs.IndexOf(dialog) + 1).ToString().Trim());
                 str.Append(startTime).Append(" --> ").Append(stopTime).AppendLine();
                 str.AppendLine(dialog.text);
                 //str.AppendLine();

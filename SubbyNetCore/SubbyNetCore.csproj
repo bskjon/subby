@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Authors>bskjon</Authors>
+    <Company>Iktdev</Company>
+    <Product>Subby</Product>
+    <Copyright>Iktdev</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Modals\Modals.csproj" />
+  </ItemGroup>
+
+</Project>
