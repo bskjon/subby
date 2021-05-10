@@ -19,17 +19,33 @@ namespace Core
 
         public List<Subtitle> GetSubtitlesByReadFormat()
         {
-            if (ReadFormat == Types.SubtitleFormat.ASS)
-                return GetAssSubtitles();
+            SubtitleReader reader = null;
+            string[] files = null;
 
-            return new List<Subtitle>();
+            switch (ReadFormat)
+            {
+                case Types.SubtitleFormat.ASS:
+                    reader = new AssSubtitleReader();
+                    files = storage.GetAllAssFiles();
+                    break;
+                case Types.SubtitleFormat.SRT:
+                    reader = new SrtSubtitleReader();
+                    files = storage.GetAllSrtFiles();
+                    break;
+                case Types.SubtitleFormat.VTT:
+                    reader = new VttSubtitleReader();
+                    files = storage.GetAllVttFiles();
+                    break;
+            }
+
+            if (reader == null)
+                return new List<Subtitle>();
+            return GetSubtitles(reader, files);
         }
 
 
-        private List<Subtitle> GetAssSubtitles()
+        private List<Subtitle> GetSubtitles(SubtitleReader reader, string[] files)
         {
-            string[] files = storage.GetAllAssFiles();
-
             List<Subtitle> subtitles = new List<Subtitle>();
             for (int i = 0; i < files.Length; i++)
             {
@@ -39,7 +55,6 @@ namespace Core
                 Console.WriteLine($"Current file: {file}");
 
                 string[] contentLines = new StorageAccess.ReadFile().GetLines(file);
-                AssSubtitleReader reader = new AssSubtitleReader();
                 reader.Load(contentLines);
 
                 IList<Dialog> dialogs = reader.GetDialogs();
@@ -56,13 +71,17 @@ namespace Core
 
             SubtitleReader reader = null;
 
-            if (Types.SubtitleFormat.ASS == format)
+            switch(format)
             {
-                reader = new AssSubtitleReader();
-            }
-            else if (Types.SubtitleFormat.SRT == format)
-            {
-                reader = new SrtSubtitleReader();
+                case Types.SubtitleFormat.ASS:
+                    reader = new AssSubtitleReader();
+                    break;
+                case Types.SubtitleFormat.SRT:
+                    reader = new SrtSubtitleReader();
+                    break;
+                case Types.SubtitleFormat.VTT:
+                    reader = new VttSubtitleReader();
+                    break;
             }
 
             if (reader != null)

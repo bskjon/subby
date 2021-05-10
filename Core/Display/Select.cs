@@ -184,8 +184,8 @@ Available formats:
             string selectionOptions = @"
 
 [0] SRT     (Subrip)
-[2] VTT     (WebVtt)
-[3] SMI     (Sami)
+[1] VTT     (WebVtt)
+[2] SMI     (Sami)
 
 [a] All     (Export to all formats listed)
 [c] Cancel
