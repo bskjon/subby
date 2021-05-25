@@ -12,8 +12,12 @@ namespace Core.Reader
     {
 
         //readonly Regex signRegex = new Regex("(?<=,)(?i)(sign|Screen)");
-        readonly Regex signRegex = new Regex("((?i)Signs(?-i)|(?i)OP(?-i)|(?i)ED(?-i)|(?i)Screen(?-i))");
+        readonly Regex songText = new Regex(@"[^A-Za-z\s]+((?i)OP(?-i)|(?i)ED(?-i))");
+        readonly Regex signRegex = new Regex("((?i)Signs(?-i)|(?i)Screen(?-i))");
         readonly Regex possiblyScreenOrSign = new Regex(@"\\[a-zA-Z0-9]+&[A-Za-z0-9]+&\\");
+
+        readonly Regex dialog = new Regex("(?i)Dialogue:(?i)");
+
 
         private List<Dialog> Dialogs { get; set; }
 
@@ -26,9 +30,35 @@ namespace Core.Reader
             }
         }
 
-        protected bool IsDialog(string text)
+        /*protected bool IsDialog(string text)
         {
-            return !signRegex.IsMatch(text) && !possiblyScreenOrSign.IsMatch(text);
+            bool isDialogEntry = dialog.IsMatch(text);
+            bool isPossiblyScreenOrSign = possiblyScreenOrSign.IsMatch(text);
+
+            bool isDialog = !isPossiblyScreenOrSign && isDialogEntry; 
+            return isDialog;
+        }*/
+
+        protected bool IsDialog(string key, string text)
+        {
+            bool isSignOrSong = signRegex.IsMatch(key) || songText.IsMatch(key);
+            bool isPossiblyScreenOrSign = possiblyScreenOrSign.IsMatch(text);
+
+            bool isDialogEntry = dialog.IsMatch(text);
+
+            bool isDialog = !isSignOrSong && !isPossiblyScreenOrSign && isDialogEntry;
+            return isDialog;
+        }
+
+        protected bool IsSongOrSign(string key, string text)
+        {
+            bool isSignOrSong = signRegex.IsMatch(key) || songText.IsMatch(key);
+            bool isPossiblyScreenOrSign = possiblyScreenOrSign.IsMatch(text);
+
+            bool isDialogEntry = dialog.IsMatch(text);
+
+            bool isDialog = (isSignOrSong || isPossiblyScreenOrSign) && isDialogEntry;
+            return isDialog;
         }
 
         public abstract void Load(string[] data);

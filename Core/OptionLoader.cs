@@ -26,6 +26,9 @@ namespace Core
             var EnableSAS = GetEnableSignsAndSongs(args);
             if (EnableSAS != null) { options.Add(EnableSAS); }
 
+            var DEBUG = Debug(args);
+            if (DEBUG != null) { options.Add(DEBUG); }
+
             return options;
         }
 
@@ -130,6 +133,25 @@ namespace Core
                 default:
                     return standard;
             }
+        }
+
+        private RunOption Debug(string[] args)
+        {
+            int pos = Array.FindIndex(args, x => x.ToLower() == "-debug");
+            string arg = GetArg(args, pos);
+            if (arg != null)
+            {
+                return new RunOption
+                {
+                    Switch = Types.OptionTypes.DEBUG,
+                    Option = GetEnable(arg.ToLower(), false)
+                };
+            }
+            return new RunOption
+            {
+                Switch = Types.OptionTypes.DEBUG,
+                Option = false
+            };
         }
 
         private string GetArg(string[] args, int switchPosition)

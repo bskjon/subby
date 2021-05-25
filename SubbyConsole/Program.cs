@@ -94,6 +94,10 @@ namespace SubbyConsole
                 Console.Read();
             }*/
             Console.WriteLine("Done!");
+            if (Config.Debug)
+            {
+                Console.ReadKey();
+            }
         }
     }
 }

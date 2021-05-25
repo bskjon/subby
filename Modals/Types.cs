@@ -22,7 +22,8 @@ namespace Core
             INPUT_FORMAT, // Should not be overriden.. Can be used in cases where the encoding is correct but is stored wrongly
             OUTPUT_FORMAT, // If not defined, will output to all formats
             FORCE_SIGNS_AND_SONGS, // Enabling this can cause issues with the output...
-            NOT_SET
+            NOT_SET,
+            DEBUG
         }
     }
 }

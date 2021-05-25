@@ -75,14 +75,39 @@ namespace Core.Reader
             return data;
         }
 
+        private string GetDialogKey(string line)
+        {
+            string[] splints = line.Split(',');
+            string style = (splints.Length >= 4) ? splints[3] : "";
+            return style;
+        }
+
         protected IList<string> GetDialogLines(string[] lines)
         {
             IList<string> dialogLines = new List<string>();
             foreach (string line in lines)
             {
-                if (IsDialog(line))
+                
+                if (IsDialog(GetDialogKey(line), line))
                 {
+                    if (Config.Debug)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write("[Idify] Dialog: ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine(string.Format("{0}", line));
+                    }
                     dialogLines.Add(line);
+                }
+                else
+                {
+                    if (Config.Debug)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write("[Idify] NonDialog: ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine(string.Format("{0}", line));
+                    }
                 }
             }
             return dialogLines;
@@ -93,7 +118,7 @@ namespace Core.Reader
             IList<string> signLines = new List<string>();
             foreach (string line in lines)
             {
-                if (!IsDialog(line))
+                if (IsSongOrSign(GetDialogKey(line), line))
                 {
                     signLines.Add(line);
                 }
