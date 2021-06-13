@@ -11,7 +11,8 @@ namespace Core.Reader
     {
         public override void Load(string[] data)
         {
-            List<Dialog> dialogs = GetDialogFromLines(GetDialogLines(data));
+            List<string> tags = GetStyles(data);
+            List<Dialog> dialogs = GetDialogFromLines(GetDialogLines(data, (tags.Count <= 0)));
 
             if (Config.AddSigns)
             {
@@ -82,13 +83,13 @@ namespace Core.Reader
             return style;
         }
 
-        protected IList<string> GetDialogLines(string[] lines)
+        protected IList<string> GetDialogLines(string[] lines, bool hasDifferentTags = false)
         {
             IList<string> dialogLines = new List<string>();
             foreach (string line in lines)
             {
                 
-                if (IsDialog(GetDialogKey(line), line))
+                if (IsDialog(GetDialogKey(line), line, hasDifferentTags))
                 {
                     if (Config.Debug)
                     {
@@ -131,6 +132,24 @@ namespace Core.Reader
             if (text.Contains(":"))
                 return text.Substring(0, text.IndexOf(":")).ToLower().Equals("dialogue");
             return false;
+        }
+
+        
+        /**
+         * Returns List of styles used
+         * This could be used to try to identify if the subtitle has different styles for the signs and dialogues
+         */
+        private List<string> GetStyles(string[] lines)
+        {
+            List<string> styles = new List<string>();
+            foreach (string line in lines)
+            {
+                if (line.Contains(":") && line.Substring(0,line.IndexOf(":")).ToLower().Equals("style"))
+                {
+                    styles.Add(line);
+                }
+            }
+            return styles;
         }
 
     }
