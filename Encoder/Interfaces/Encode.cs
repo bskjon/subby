@@ -18,7 +18,7 @@ namespace Encoder.Interfaces
         /// </summary>
         protected void AppendEncoderLine()
         {
-            if (CanShamelesslyInjectEncoder(dialogs.ElementAt(0)))
+            if (dialogs.Count > 0 && CanShamelesslyInjectEncoder(dialogs.ElementAt(0)))
             {
                 Dialog shamelessPlug = new Dialog
                 {
