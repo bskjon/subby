@@ -16,6 +16,17 @@ namespace SubbyNetCore
 
             List<RunOption> optionList = new OptionLoader().GetOptions(args);
 
+            if (optionList.Any(x => x.Switch == Types.OptionTypes.DEBUG))
+            {
+                bool isDebugging = (bool)optionList.FirstOrDefault(x => x.Switch == Types.OptionTypes.DEBUG).Option;
+
+                if (isDebugging)
+                {
+                    Console.Write("Enabling Debugging");
+                    Config.Debug = true;
+                }
+            }
+
 
             string input_subtitle = null;
             Types.SubtitleFormat ReadFormat = Types.SubtitleFormat.NOT_SET;
@@ -109,8 +120,12 @@ namespace SubbyNetCore
             else
             {
                 Console.WriteLine("No subtitles found...");
+                if (Config.Debug)
+                    Console.ReadKey();
                 Environment.Exit(1);
             }
+            if (Config.Debug)
+                Console.ReadKey();
         }
     }
 }

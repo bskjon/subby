@@ -2,7 +2,7 @@
   "profiles": {
     "SubbyNetCore": {
       "commandName": "Project",
-      "commandLineArgs": "-input \"F:\\stream\\test_in\\Psycho-Pass S01E01.ass\" -output F:\\stream\\test_out -enc_sas no"
+      "commandLineArgs": "-input \"F:\\stream\\subtitle\\Vivy\\Vivy - S01E05.ass\" -output F:\\stream\\test_out -enc_sas no"
     }
   }
 }

@@ -11,11 +11,12 @@ namespace Core.Reader
     {
         public override void Load(string[] data)
         {
-            List<Dialog> dialogs = GetDialogFromLines(GetDialogLines(data));
+            List<string> tags = GetStyles(data);
+            List<Dialog> dialogs = GetDialogFromLines(GetDialogLines(data, (tags.Count > 1)));
 
             if (Config.AddSigns)
             {
-                List<Dialog> signs = GetSignFromLines(GetSignLines(data));
+                List<Dialog> signs = GetSignFromLines(GetSignLines(data, (tags.Count > 1)));
                 dialogs.AddRange(signs);
             }
 
@@ -75,25 +76,50 @@ namespace Core.Reader
             return data;
         }
 
-        protected IList<string> GetDialogLines(string[] lines)
+        private string GetDialogKey(string line)
+        {
+            string[] splints = line.Split(',');
+            string style = (splints.Length >= 4) ? splints[3] : "";
+            return style;
+        }
+
+        protected IList<string> GetDialogLines(string[] lines, bool hasDifferentTags = false)
         {
             IList<string> dialogLines = new List<string>();
             foreach (string line in lines)
             {
-                if (IsDialog(line))
+                
+                if (IsDialog(GetDialogKey(line), line, hasDifferentTags))
                 {
+                    if (Config.Debug)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write("[Idify] Dialog: ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine(string.Format("{0}", line));
+                    }
                     dialogLines.Add(line);
+                }
+                else
+                {
+                    if (Config.Debug)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write("[Idify] NonDialog: ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine(string.Format("{0}", line));
+                    }
                 }
             }
             return dialogLines;
         }
 
-        protected IList<string> GetSignLines(string[] lines)
+        protected IList<string> GetSignLines(string[] lines, bool hasDifferentTags = false)
         {
             IList<string> signLines = new List<string>();
             foreach (string line in lines)
             {
-                if (!IsDialog(line))
+                if (IsSongOrSign(GetDialogKey(line), line, hasDifferentTags))
                 {
                     signLines.Add(line);
                 }
@@ -106,6 +132,24 @@ namespace Core.Reader
             if (text.Contains(":"))
                 return text.Substring(0, text.IndexOf(":")).ToLower().Equals("dialogue");
             return false;
+        }
+
+        
+        /**
+         * Returns List of styles used
+         * This could be used to try to identify if the subtitle has different styles for the signs and dialogues
+         */
+        private List<string> GetStyles(string[] lines)
+        {
+            List<string> styles = new List<string>();
+            foreach (string line in lines)
+            {
+                if (line.Contains(":") && line.Substring(0,line.IndexOf(":")).ToLower().Equals("style"))
+                {
+                    styles.Add(line);
+                }
+            }
+            return styles;
         }
 
     }

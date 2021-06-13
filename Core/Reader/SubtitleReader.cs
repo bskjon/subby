@@ -12,8 +12,15 @@ namespace Core.Reader
     {
 
         //readonly Regex signRegex = new Regex("(?<=,)(?i)(sign|Screen)");
-        readonly Regex signRegex = new Regex("((?i)Signs(?-i)|(?i)OP(?-i)|(?i)ED(?-i)|(?i)Screen(?-i))");
+        //readonly Regex textTags = new Regex(@"([<](?<=<).*?(?=>)[>])|({\\[^ib])");
+        readonly Regex textTags = new Regex(@"([<](?<=<).*?(?=>)[>])|([{](?<={).*?(?=})[}])");
+        readonly Regex tagIsNotItalicOrBold = new Regex(@"({\\[^ib])");
+        readonly Regex songText = new Regex(@"[^A-Za-z\s]+((?i)OP(?-i)|(?i)ED(?-i))");
+        readonly Regex signRegex = new Regex("((?i)Signs(?-i)|(?i)Screen(?-i))");
         readonly Regex possiblyScreenOrSign = new Regex(@"\\[a-zA-Z0-9]+&[A-Za-z0-9]+&\\");
+
+        readonly Regex dialog = new Regex("(?i)Dialogue:(?i)");
+
 
         private List<Dialog> Dialogs { get; set; }
 
@@ -26,9 +33,70 @@ namespace Core.Reader
             }
         }
 
-        protected bool IsDialog(string text)
+        /*protected bool IsDialog(string text)
         {
-            return !signRegex.IsMatch(text) && !possiblyScreenOrSign.IsMatch(text);
+            bool isDialogEntry = dialog.IsMatch(text);
+            bool isPossiblyScreenOrSign = possiblyScreenOrSign.IsMatch(text);
+
+            bool isDialog = !isPossiblyScreenOrSign && isDialogEntry; 
+            return isDialog;
+        }*/
+
+        protected bool IsDialog(string key, string text, bool hasDifferentTags)
+        {
+            bool isSignOrSong = signRegex.IsMatch(key) || songText.IsMatch(key);
+            bool isPossiblyScreenOrSign = possiblyScreenOrSign.IsMatch(text);
+
+            bool isDialogEntry = dialog.IsMatch(text);
+
+            if (!isDialogEntry)
+            {
+                return false;
+            }
+
+
+            bool isDialog = (!isSignOrSong && !isPossiblyScreenOrSign) && isDialogEntry; // : IsTextTagsItalicOrBold(text)  isDialogEntry;
+            if (!hasDifferentTags && MatchesNonItalicOrBoldTag(text))
+            {
+                isDialog = false;
+            }
+
+            return isDialog;
+        }
+
+        protected bool IsSongOrSign(string key, string text, bool hasDifferentTags)
+        {
+            bool isSignOrSong = signRegex.IsMatch(key) || songText.IsMatch(key);
+            bool isPossiblyScreenOrSign = possiblyScreenOrSign.IsMatch(text);
+
+            bool isDialogEntry = dialog.IsMatch(text);
+
+            bool hasTextTags = textTags.IsMatch(text);
+            bool isNotItalicOrBold = tagIsNotItalicOrBold.IsMatch(text);
+
+
+            bool isSameTagLineNotDialog = hasTextTags && !isNotItalicOrBold;
+
+            if (!isDialogEntry)
+            {
+                return false;
+            }
+
+
+            bool isSongOrSign = (isSignOrSong || isPossiblyScreenOrSign) && isDialogEntry;
+            if (!hasDifferentTags && MatchesNonItalicOrBoldTag(text))
+            {
+                isSongOrSign = true;
+            }
+            return isSongOrSign;
+        }
+
+        private bool MatchesNonItalicOrBoldTag(string text)
+        {
+            bool hasTextTags = textTags.IsMatch(text);
+            bool isNotItalicOrBold = tagIsNotItalicOrBold.IsMatch(text);
+
+            return (hasTextTags && isNotItalicOrBold);
         }
 
         public abstract void Load(string[] data);
