@@ -9,6 +9,7 @@
     <Product>Subby</Product>
     <Copyright>Iktdev</Copyright>
     <AssemblyName>subby</AssemblyName>
+    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
   <ItemGroup>
