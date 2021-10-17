@@ -16,7 +16,11 @@ namespace Cleaner
         readonly Regex extraSpaces = new Regex(@"\s\s+");
         readonly Regex stripLinebreak = new Regex(@"(?i)\\N");
 
-        readonly Regex validText = new Regex(@"(?i)[^.,'`´0-9:A-Z !?+-;*&%$@#§|]+");
+        readonly Regex validText = new Regex(@"(?i)[^\p{L}.:`'´#0-9]+");
+        readonly Regex onlyText = new Regex(@"(?i)[\p{L}]+");
+        readonly Regex required = new Regex(@"[\p{L}.:]"); // Required minimum. If there is only numbers, dissalow
+        readonly Regex anyNumer = new Regex(@"[0-9]");
+        readonly Regex spaced = new Regex(@"[\s]");
 
 
         public string GetSanitized(string text)
@@ -31,19 +35,34 @@ namespace Cleaner
                 string[] lines = stripLinebreak.Split(text);
                 foreach (string line in lines)
                 {
-                    string rline = validText.Replace(line, " ");
+                    string rline = GetValidText(line);
                     builder.AppendLine(rline);
                 }
                 text = builder.ToString();
             }
             else
             {
-                text = validText.Replace(text, " ");
+                text = GetValidText(text);
             }
             text = text.Trim();
 
 
             return extraSpaces.Replace(text, " ");
+        }
+
+        private string GetValidText(string inputText)
+        {
+            string text = validText.Replace(inputText, " ");
+            if (onlyText.Matches(text).Count > 1)
+            {
+                return text;
+            }
+            else if (required.Matches(text).Count >= 1 && spaced.Matches(text).Count <= 4 )
+            {
+                return text;
+            }
+
+            return "";
         }
 
         public string[] GetLines(string text)
