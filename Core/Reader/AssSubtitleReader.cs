@@ -12,11 +12,13 @@ namespace Core.Reader
         public override void Load(string[] data)
         {
             List<string> tags = GetStyles(data);
-            List<Dialog> dialogs = GetDialogFromLines(GetDialogLines(data, (tags.Count > 1)));
+            // List<Dialog> dialogs = GetDialogFromLines(GetDialogLines(data, (tags.Count > 1)));
+            List<Dialog> dialogs = GetDialogFromLines(GetDialogLines(data));
 
             if (Config.AddSigns)
             {
-                List<Dialog> signs = GetSignFromLines(GetSignLines(data, (tags.Count > 1)));
+                // List<Dialog> signs = GetSignFromLines(GetSignLines(data, (tags.Count > 1)));
+                List<Dialog> signs = GetSignFromLines(GetSignLines(data));
                 dialogs.AddRange(signs);
             }
 
@@ -83,7 +85,7 @@ namespace Core.Reader
             return style;
         }
 
-        protected IList<string> GetDialogLines(string[] lines, bool hasDifferentTags = false)
+        protected IList<string> GetDialogLines(string[] lines, bool hasDifferentTags = true)
         {
             IList<string> dialogLines = new List<string>();
             foreach (string line in lines)
@@ -114,7 +116,7 @@ namespace Core.Reader
             return dialogLines;
         }
 
-        protected IList<string> GetSignLines(string[] lines, bool hasDifferentTags = false)
+        protected IList<string> GetSignLines(string[] lines, bool hasDifferentTags = true)
         {
             IList<string> signLines = new List<string>();
             foreach (string line in lines)
