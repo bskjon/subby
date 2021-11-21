@@ -16,7 +16,7 @@ namespace Core.Reader
         readonly Regex textTags = new Regex(@"([<](?<=<).*?(?=>)[>])|([{](?<={).*?(?=})[}])");
         readonly Regex tagIsNotItalicOrBold = new Regex(@"({\\[^ib])");
         readonly Regex songText = new Regex(@"[^A-Za-z\s]+((?i)OP(?-i)|(?i)ED(?-i))");
-        readonly Regex signRegex = new Regex("((?i)Signs(?-i)|(?i)Screen(?-i))");
+        readonly Regex signRegex = new Regex("((?i)Sign(?-i)|(?i)Signs(?-i)|(?i)Screen(?-i))");
         readonly Regex possiblyScreenOrSign = new Regex(@"\\[a-zA-Z0-9]+&[A-Za-z0-9]+&\\");
 
         readonly Regex dialog = new Regex("(?i)Dialogue:(?i)");
@@ -42,10 +42,12 @@ namespace Core.Reader
             return isDialog;
         }*/
 
-        protected bool IsDialog(string key, string text, bool hasDifferentTags)
+        protected bool IsDialog(string key, string name, string text, bool hasDifferentTags)
         {
-            bool isSignOrSong = signRegex.IsMatch(key) || songText.IsMatch(key);
-            bool isPossiblyScreenOrSign = possiblyScreenOrSign.IsMatch(text);
+            bool isKeySignOrSong = signRegex.IsMatch(key) || songText.IsMatch(key);
+            bool isKeyPossiblyScreenOrSign = possiblyScreenOrSign.IsMatch(text);
+
+            bool isNameSignOrSong = signRegex.IsMatch(name) || songText.IsMatch(name);
 
             bool isDialogEntry = dialog.IsMatch(text);
 
@@ -55,7 +57,7 @@ namespace Core.Reader
             }
 
 
-            bool isDialog = (!isSignOrSong && !isPossiblyScreenOrSign) && isDialogEntry; // : IsTextTagsItalicOrBold(text)  isDialogEntry;
+            bool isDialog = (!isKeySignOrSong && !isNameSignOrSong && !isKeyPossiblyScreenOrSign) && isDialogEntry; // : IsTextTagsItalicOrBold(text)  isDialogEntry;
             if (!hasDifferentTags && MatchesNonItalicOrBoldTag(text))
             {
                 isDialog = false;
@@ -64,10 +66,13 @@ namespace Core.Reader
             return isDialog;
         }
 
-        protected bool IsSongOrSign(string key, string text, bool hasDifferentTags)
+        protected bool IsSongOrSign(string key, string name, string text, bool hasDifferentTags)
         {
             bool isSignOrSong = signRegex.IsMatch(key) || songText.IsMatch(key);
             bool isPossiblyScreenOrSign = possiblyScreenOrSign.IsMatch(text);
+
+            bool isNameSignOrSong = signRegex.IsMatch(name) || songText.IsMatch(name);
+
 
             bool isDialogEntry = dialog.IsMatch(text);
 
@@ -83,7 +88,7 @@ namespace Core.Reader
             }
 
 
-            bool isSongOrSign = (isSignOrSong || isPossiblyScreenOrSign) && isDialogEntry;
+            bool isSongOrSign = (isSignOrSong || isPossiblyScreenOrSign || isNameSignOrSong) && isDialogEntry;
             if (!hasDifferentTags && MatchesNonItalicOrBoldTag(text))
             {
                 isSongOrSign = true;

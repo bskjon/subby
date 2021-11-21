@@ -85,13 +85,20 @@ namespace Core.Reader
             return style;
         }
 
+        private string GetDialogKeyName(string line)
+        {
+            string[] splints = line.Split(',');
+            string name = (splints.Length >= 5) ? splints[4] : "";
+            return name;
+        }
+
         protected IList<string> GetDialogLines(string[] lines, bool hasDifferentTags = true)
         {
             IList<string> dialogLines = new List<string>();
             foreach (string line in lines)
             {
                 
-                if (IsDialog(GetDialogKey(line), line, hasDifferentTags))
+                if (IsDialog(GetDialogKey(line), GetDialogKeyName(line), line, hasDifferentTags))
                 {
                     if (Config.Debug)
                     {
@@ -121,7 +128,7 @@ namespace Core.Reader
             IList<string> signLines = new List<string>();
             foreach (string line in lines)
             {
-                if (IsSongOrSign(GetDialogKey(line), line, hasDifferentTags))
+                if (IsSongOrSign(GetDialogKey(line), GetDialogKeyName(line), line, hasDifferentTags))
                 {
                     signLines.Add(line);
                 }
