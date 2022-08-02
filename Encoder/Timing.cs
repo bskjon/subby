@@ -16,7 +16,16 @@ namespace Encoder
         /// <exception cref="">FormatException</exception>
         public Timing(string value)
         {
-            time = TimeSpan.Parse(value);
+            if (value.Contains(","))
+            {
+                string saferValue = value.Replace(",", ".");
+                time = TimeSpan.Parse(saferValue);
+            } 
+            else
+            {
+                time = TimeSpan.Parse(value);
+            }
+
         }
 
         public Timing()
