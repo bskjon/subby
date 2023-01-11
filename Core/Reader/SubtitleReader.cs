@@ -16,11 +16,13 @@ namespace Core.Reader
         readonly Regex textTags = new Regex(@"([<](?<=<).*?(?=>)[>])|([{](?<={).*?(?=})[}])");
         readonly Regex tagIsNotItalicOrBold = new Regex(@"({\\[^ib])");
         readonly Regex songText = new Regex(@"[^A-Za-z\s]+((?i)OP(?-i)|(?i)ED(?-i))");
-        readonly Regex signRegex = new Regex("((?i)Sign(?-i)|(?i)Signs(?-i)|(?i)Screen(?-i))");
+        readonly Regex signRegex = new Regex("((?i)Sign(?-i)|(?i)Signs(?-i))");
+        public readonly Regex screenRegex = new Regex("(?i)Screen(?-i)");
         readonly Regex possiblyScreenOrSign = new Regex(@"\\[a-zA-Z0-9]+&[A-Za-z0-9]+&\\");
-
         readonly Regex dialog = new Regex("(?i)Dialogue:(?i)");
+        readonly Regex positionTag = new Regex(@"([{](?<={).*?(?=})[}])[a-zA-Z]+[0-9 ]+[a-zA-Z]+[0-9 ]+");
 
+        protected bool checkScreen { get; set; }
 
         private List<Dialog> Dialogs { get; set; }
 
@@ -44,10 +46,23 @@ namespace Core.Reader
 
         protected bool IsDialog(string key, string name, string text, bool hasDifferentTags)
         {
+            if (positionTag.IsMatch(text))
+            {
+                return false;
+            }
+
             bool isKeySignOrSong = signRegex.IsMatch(key) || songText.IsMatch(key);
             bool isKeyPossiblyScreenOrSign = possiblyScreenOrSign.IsMatch(text);
 
             bool isNameSignOrSong = signRegex.IsMatch(name) || songText.IsMatch(name);
+            if (checkScreen == true)
+            {
+                if (screenRegex.IsMatch(name))
+                {
+                    isNameSignOrSong = true;
+                }
+            }
+
 
             bool isDialogEntry = dialog.IsMatch(text);
 

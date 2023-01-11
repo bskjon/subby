@@ -95,6 +95,14 @@ namespace Core.Reader
         protected IList<string> GetDialogLines(string[] lines, bool hasDifferentTags = true)
         {
             IList<string> dialogLines = new List<string>();
+
+            var count = lines.Where(x => screenRegex.IsMatch(x)).Count();
+            var usage = count * 100.0 / lines.Length;
+            if (usage >= 40)
+            {
+                checkScreen = false;
+            }
+
             foreach (string line in lines)
             {
                 
